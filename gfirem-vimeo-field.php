@@ -38,9 +38,11 @@ if (! class_exists('GFireMVimeoField')) {
 		 */
 		private function __construct()
 		{
+			//TODO add freemius
 			self::$assets = plugin_dir_url(__FILE__) . 'assets/';
 			self::$view = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'view' . DIRECTORY_SEPARATOR;
-
+			require_once 'classes'.DIRECTORY_SEPARATOR.'class-gfirem-vimeo-field-imp.php';
+			new GFireMVimeoFieldImp();
 		}
 
 		/**

@@ -9,9 +9,11 @@
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 	border-radius: 5px;
-	padding-top: 60px;
+	padding-top: 35px;
 	text-align: center;
-	font: 20pt bold 'Helvetica';
+	font-family: 'Helvetica', serif;
+	font-weight: 400;
+	font-size: 18px;
 	color: #bbb;
 	height:140px;
 }
@@ -20,4 +22,40 @@
 	margin-top: 1em;
 	font-size: 1.1em;
 	font-weight: 500;
+}
+
+/* Bragit buttons, http://websemantics.github.io/bragit/ */
+.ui.bragit.button,
+.ui.bragit.buttons .button {
+	background-color: #676f7e;
+	color: #fff!important;
+}
+
+.ui.bragit.label {
+	color: #505662!important;
+	border-color: #676f7e!important;
+	background-color: #ffffff;
+}
+
+.ui.bragit.button:focus,
+.ui.bragit.buttons .button:focus,
+.ui.bragit.button:hover,
+.ui.bragit.buttons .button:hover {
+	background-color: #505662;
+}
+
+.ui.bragit.labels .label:focus,
+.ui.bragit.label:focus,
+.ui.bragit.labels .label:hover,
+.ui.bragit.label:hover {
+	color: #505662!important;
+	border-color: #505662!important;
+}
+
+.ui.labeled .ui.button .star.icon {
+	color: #F5CC7A!important;
+}
+
+.frm_compact #drop_zone{
+	display: none;
 }

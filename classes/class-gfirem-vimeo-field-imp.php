@@ -2,14 +2,15 @@
 if ( ! defined( 'WPINC' ) ) {
 	die;
 }
+
 /**
  * Class AdPiggy_Vimeo_Field
  *
  * Class to add a new field to formidable
  */
-class AdPiggy_Vimeo_Field {
+class GFireMVimeoFieldImp {
 	/**
-	 * AdPiggy_Vimeo_Field constructor.
+	 * @var string.
 	 */
 	public $slug;
 	/**
@@ -34,13 +35,14 @@ class AdPiggy_Vimeo_Field {
 	 * @var string
 	 */
 	private $version = '1.0.0';
+
 	/**
-	 * AdPiggy_Vimeo_Field constructor.
+	 * GFireMVimeoFieldImp constructor.
 	 */
 	public function __construct() {
-		$this->slug        = 'AdPiggy_Video_See';
-		$this->name        = esc_attr( 'AdPiggy Vimeo' );
-		$this->description = esc_attr( 'AdPiggy Vimeo field to upload a video' );
+		$this->slug        = 'GFireM_Vimeo_Field';
+		$this->name        = esc_attr( 'GFireM Vimeo' );
+		$this->description = esc_attr( 'Upload videos to Vimeo directly' );
 		$this->defaults    = array(
 			'token'           => '',
 			'upgrade_to_1080' => '',
@@ -61,15 +63,21 @@ class AdPiggy_Vimeo_Field {
 		add_filter( 'frm_field_classes', array( $this, 'process_fields_class' ), 10, 2 );
 		add_filter( 'frm_email_value', array( $this, 'process_replace_value_in_mail' ), 15, 3 );
 	}
+
 	/**
 	 * @param $fields
 	 *
 	 * @return mixed
 	 */
 	public function add_formidable_field( $fields ) {
-		$fields[ $this->slug ] = '<b class="adpiggy_field">' . esc_html( $this->name ) . '</b>';
+		$fields[ $this->slug ] = array(
+			'name' => $this->name,
+			'icon' => 'frm_icon_font frm_credit-card-alt_icon'
+		);
+
 		return $fields;
 	}
+
 	/**
 	 * @param $field
 	 * @param $display
@@ -86,6 +94,7 @@ class AdPiggy_Vimeo_Field {
 		}
 		$this->inside_field_options( $field, $display, $values );
 	}
+
 	/**
 	 * Display the additional options for the new field
 	 *
@@ -97,6 +106,7 @@ class AdPiggy_Vimeo_Field {
 		$path = $this->load_field_template( 'field_option' );
 		include $path;
 	}
+
 	/**
 	 * @param $field_data
 	 *
@@ -110,8 +120,10 @@ class AdPiggy_Vimeo_Field {
 			}
 			$this->set_field_options( $field_data );
 		}
+
 		return $field_data;
 	}
+
 	/**
 	 * Set the default options for the field
 	 *
@@ -122,6 +134,7 @@ class AdPiggy_Vimeo_Field {
 	protected function set_field_options( $field_data ) {
 		return $field_data;
 	}
+
 	/**
 	 * @param $field
 	 */
@@ -132,6 +145,7 @@ class AdPiggy_Vimeo_Field {
 		$description = ( ! empty( $this->description ) ) ? $this->description : 'Default placeholder to show into the admin.';
 		$this->placeholder_admin_field( $field, $description );
 	}
+
 	/**
 	 * Show the field placeholder in the admin area
 	 *
@@ -142,6 +156,7 @@ class AdPiggy_Vimeo_Field {
 		$path = $this->load_field_template( 'field_admin_place_holder' );
 		include $path;
 	}
+
 	/**
 	 * @param $part
 	 *
@@ -150,11 +165,12 @@ class AdPiggy_Vimeo_Field {
 	public static function load_field_template( $part ) {
 		$template = locate_template( array( 'templates/' . $part . '.php' ) );
 		if ( ! $template ) {
-			return ADPIGGY_TEMPLATES_PATH . $part . '.php';
+			return GFireMVimeoField::$view . $part . '.php';
 		} else {
 			return $template;
 		}
 	}
+
 	/**
 	 * @see $this->update_field_options
 	 */
@@ -162,8 +178,10 @@ class AdPiggy_Vimeo_Field {
 		if ( $field->type !== $this->get_slug() ) {
 			return $field_options;
 		}
+
 		return $this->update_inside_field_options( $field_options, $field, $values );
 	}
+
 	/**
 	 * @param $field_options
 	 * @param $field
@@ -175,8 +193,10 @@ class AdPiggy_Vimeo_Field {
 		foreach ( $this->defaults as $opt => $default ) {
 			$field_options[ $opt ] = isset( $values['field_options'][ $opt . '_' . $field->id ] ) ? $values['field_options'][ $opt . '_' . $field->id ] : $default;
 		}
+
 		return $field_options;
 	}
+
 	/**
 	 * @param $field
 	 * @param $field_name
@@ -190,12 +210,13 @@ class AdPiggy_Vimeo_Field {
 		$this->form_id  = $field['form_id'];
 		$this->field_front_view( $field, $field_name, $html_id );
 	}
+
 	/**
 	 * Add the HTML for the field on the front end
 	 *
 	 * @param $field
 	 * @param $field_name
-	 *
+	 * @param $html_id
 	 */
 	protected function field_front_view( $field, $field_name, $html_id ) {
 		$print_value = $field['default_value'];
@@ -203,28 +224,30 @@ class AdPiggy_Vimeo_Field {
 			$print_value = $field['value'];
 		}
 		$this->load_script();
-		include ADPIGGY_VIEWS_PATH . 'adpiggy-vimeo-view.php';
+		include GFireMVimeoField::$view . 'gfirem-vimeo-field-view.php';
 	}
+
 	/**
 	 * Load script for the field
 	 */
 	function load_script() {
-		$adpiggy_fields = FrmField::get_all_types_in_form( $this->form_id, $this->slug );
+		$gfirem_vimeo_fields = FrmField::get_all_types_in_form( $this->form_id, $this->slug );
 		$params         = array(
 			'video_name' => 'user_' . get_current_user_id() . '_form_' . $this->form_id . '_' . time(),
 		);
-		foreach ( $adpiggy_fields as $key => $field ) {
+		foreach ( $gfirem_vimeo_fields as $key => $field ) {
 			foreach ( $this->defaults as $def_key => $def_val ) {
 				$opt                = FrmField::get_option( $field, $def_key );
 				$params[ $def_key ] = ( ! empty( $opt ) ) ? $opt : $def_val;
 			}
 		}
-		wp_enqueue_style( 'adpiggy_style', ADPIGGY_CSS_PATH . 'adpiggy.css' );
-		wp_enqueue_script( 'adpiggy-upload', ADPIGGY_JS_PATH . 'adpiggy-upload.js', array( 'jquery' ), $this->version, true );
-		wp_enqueue_script( 'vimeo_upload', ADPIGGY_JS_PATH . 'vimeo-upload.js', array( 'jquery' ), $this->version, true );
-		wp_enqueue_script( 'upload-cordova', ADPIGGY_JS_PATH . 'upload-cordova.js', array( 'jquery' ), $this->version, true );
-		wp_localize_script( 'adpiggy-upload', 'adpiggy_obj', $params );
+		wp_enqueue_style( 'gfirem-vimeo-field', GFireMVimeoField::$assets . 'css/gfirem-vimeo-field.css' );
+		wp_enqueue_script( 'gfirem-vimeo-field-upload', GFireMVimeoField::$assets . 'js/gfirem-vimeo-field-upload.js', array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( 'vimeo_upload', GFireMVimeoField::$assets . 'js/vimeo-upload.js', array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( 'upload-cordova', GFireMVimeoField::$assets . 'js/upload-cordova.js', array( 'jquery' ), $this->version, true );
+		wp_localize_script( 'gfirem-vimeo-field-upload', 'gfiremVimeoField', $params );
 	}
+
 	/**
 	 * @see $this->admin_view_field
 	 */
@@ -232,8 +255,10 @@ class AdPiggy_Vimeo_Field {
 		if ( $field->type !== $this->get_slug() ) {
 			return $value;
 		}
+
 		return $this->field_admin_view( $value, $field, $attr );
 	}
+
 	/**
 	 * Add the HTML to display the field in the admin area
 	 *
@@ -247,8 +272,10 @@ class AdPiggy_Vimeo_Field {
 		if ( empty( $value ) ) {
 			return $value;
 		}
+
 		return $value;
 	}
+
 	/**
 	 * @see $this->display_options
 	 */
@@ -256,8 +283,10 @@ class AdPiggy_Vimeo_Field {
 		if ( $display['type'] === $this->get_slug() ) {
 			return $this->display_options( $display );
 		}
+
 		return $display;
 	}
+
 	/**
 	 * Set display option for the field
 	 *
@@ -268,6 +297,7 @@ class AdPiggy_Vimeo_Field {
 	protected function display_options( $display ) {
 		return $display;
 	}
+
 	/**
 	 * @see $this->process_short_code
 	 */
@@ -275,8 +305,10 @@ class AdPiggy_Vimeo_Field {
 		if ( $field->type !== $this->get_slug() ) {
 			return $replace_with;
 		}
+
 		return $this->process_short_code( $replace_with, $tag, $attr, $field );
 	}
+
 	/**
 	 * Add custom shortcode
 	 *
@@ -290,6 +322,7 @@ class AdPiggy_Vimeo_Field {
 	protected function process_short_code( $replace_with, $tag, $attr, $field ) {
 		return $replace_with;
 	}
+
 	/**
 	 * @see $this->validate_frm_entry
 	 */
@@ -297,8 +330,10 @@ class AdPiggy_Vimeo_Field {
 		if ( $posted_field->type !== $this->get_slug() ) {
 			return $errors;
 		}
+
 		return $this->validate_frm_entry( $errors, $posted_field, $posted_value );
 	}
+
 	/**
 	 * Validate if exist the key in the form target
 	 *
@@ -311,6 +346,7 @@ class AdPiggy_Vimeo_Field {
 	protected function validate_frm_entry( $errors, $posted_field, $posted_value ) {
 		return $errors;
 	}
+
 	/**
 	 * @see $this->fields_class
 	 */
@@ -318,8 +354,10 @@ class AdPiggy_Vimeo_Field {
 		if ( $field['type'] === $this->get_slug() ) {
 			$classes .= $this->fields_class( $classes, $field );
 		}
+
 		return $classes;
 	}
+
 	/**
 	 * Add class to the field
 	 *
@@ -331,6 +369,7 @@ class AdPiggy_Vimeo_Field {
 	protected function fields_class( $classes, $field ) {
 		return $classes;
 	}
+
 	/**
 	 * @see $this->replace_value_in_mail
 	 */
@@ -338,8 +377,10 @@ class AdPiggy_Vimeo_Field {
 		if ( $meta->field_type === $this->get_slug() ) {
 			return $this->replace_value_in_mail( $value, $meta, $entry );
 		}
+
 		return $value;
 	}
+
 	/**
 	 * Replace value in email notifications
 	 *
@@ -352,12 +393,14 @@ class AdPiggy_Vimeo_Field {
 	public function replace_value_in_mail( $value, $meta, $entry ) {
 		return $value;
 	}
+
 	/**
 	 * @return string
 	 */
 	public function get_slug() {
 		return $this->slug;
 	}
+
 	/**
 	 * @param        $entry
 	 * @param        $value
@@ -374,6 +417,7 @@ class AdPiggy_Vimeo_Field {
 			$content = $value;
 		}
 		FrmProFieldsHelper::replace_non_standard_formidable_shortcodes( array(), $content );
+
 		return do_shortcode( $content );
 	}
 }

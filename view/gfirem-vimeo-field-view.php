@@ -7,19 +7,12 @@
 <div class="frm_dropzone frm_single_upload dz-clickable">
 	<div class="dz-message needsclick vimeo-upload-container">
 		<span class="frm_icon_font frm_upload_icon"></span>
-		<div id="drop_zone">Drop Files Here</div>
-		<span class="frm_upload_text">Drop a file here or click to upload</span>
-		<span class="frm_compact_text">Choose File</span>
-		<label class="btn btn-block btn-info">
-			<input id="browse" type="file" style="display: none;">
+		<div id="drop_zone">Drop a file here or click to upload</div>
+		<label class="btn btn-block btn-info" style="visibility: hidden;">
+			<input id="browse" type="file">
 		</label>
-	</div>
-	<br/>
-	<div class="row">
-		<div class="col-md-12">
-			<div id="progress-container" class="progress">
-				<div id="progress" class="progress-bar progress-bar-info progress-bar-striped active" role="progressbar" aria-valuenow="46" aria-valuemin="0" aria-valuemax="100" style="width: 0%">&nbsp;0%
-				</div>
+		<div id="progress-container" class="progress">
+			<div id="progress" class="progress-bar progress-bar-info progress-bar-striped active" role="progressbar" aria-valuenow="46" aria-valuemin="0" aria-valuemax="100" style="width: 0%">&nbsp;0%
 			</div>
 		</div>
 	</div>
